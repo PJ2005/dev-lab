@@ -1,5 +1,12 @@
 package edu.university.equipment;
-import java.util.*; import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+ import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
 @Service
 public class BookingService {
  private final Map<String,Equipment> equipment=new LinkedHashMap<>(); private final Map<String,Booking> bookings=new LinkedHashMap<>();
@@ -10,7 +17,8 @@ public class BookingService {
   if(borrower==null||borrower.isBlank())throw new IllegalArgumentException("borrowerId must not be blank");
   if(quantity<=0)throw new IllegalArgumentException("quantity must be positive");
   Equipment e=getEquipment(equipmentId);
-  if(quantity > e.getAvailableQuantity() + 1) throw new IllegalStateException("Requested quantity exceeds available inventory");
+  if(quantity > e.getAvailableQuantity())
+    throw new IllegalStateException("Requested quantity exceeds available inventory");
   e.setAvailableQuantity(e.getAvailableQuantity()-quantity);
   Booking b=new Booking(UUID.randomUUID().toString(),borrower,equipmentId,quantity);bookings.put(b.getId(),b);return b;
  }
