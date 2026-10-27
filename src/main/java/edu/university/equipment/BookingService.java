@@ -23,5 +23,23 @@ public class BookingService {
   Booking b=new Booking(UUID.randomUUID().toString(),borrower,equipmentId,quantity);bookings.put(b.getId(),b);return b;
  }
  public synchronized Booking getBooking(String id){Booking b=bookings.get(id);if(b==null)throw new NoSuchElementException("Booking not found: "+id);return b;}
- public synchronized Booking cancel(String id){Booking b=getBooking(id);if("CANCELLED".equals(b.getStatus()))throw new IllegalStateException("Booking already cancelled");Equipment e=getEquipment(b.getEquipmentId());e.setAvailableQuantity(e.getAvailableQuantity()+b.getQuantity());b.setStatus("CANCELLED");return b;}
+ public synchronized Booking cancel(String id) {
+    Booking b = getBooking(id);
+
+    if (!"CONFIRMED".equals(b.getStatus())) {
+        throw new IllegalStateException(
+            "Only confirmed bookings can be cancelled"
+        );
+    }
+
+    Equipment e = getEquipment(b.getEquipmentId());
+
+    e.setAvailableQuantity(
+        e.getAvailableQuantity() + b.getQuantity()
+    );
+
+    b.setStatus("CANCELLED");
+
+    return b;
+} 
 }

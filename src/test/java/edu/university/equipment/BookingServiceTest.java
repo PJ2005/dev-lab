@@ -29,4 +29,34 @@ class BookingServiceTest {
 
     assertEquals(4, service.getEquipment("PROJECTOR01").getAvailableQuantity());
 }
+ @Test void cancellingConfirmedBookingRestoresInventory() {
+    Booking b = service.create("STU1001", "TABLET01", 3);
+
+    Booking cancelled = service.cancel(b.getId());
+
+    assertEquals("CANCELLED", cancelled.getStatus());
+    assertEquals(8, service.getEquipment("TABLET01").getAvailableQuantity());
+}
+ @Test void repeatedCancellationDoesNotRestoreInventoryAgain() {
+    Booking b = service.create("STU1001", "TABLET01", 3);
+
+    service.cancel(b.getId());
+
+    assertThrows(
+        IllegalStateException.class,
+        () -> service.cancel(b.getId())
+    );
+
+    assertEquals(8, service.getEquipment("TABLET01").getAvailableQuantity());
+}
+ @Test void cancelledBookingRemainsCancelled() {
+    Booking b = service.create("STU1001", "TABLET01", 3);
+
+    service.cancel(b.getId());
+
+    Booking retrieved = service.getBooking(b.getId());
+
+    assertEquals("CANCELLED", retrieved.getStatus());
+    assertEquals(8, service.getEquipment("TABLET01").getAvailableQuantity());
+}
 }
