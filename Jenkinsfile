@@ -133,11 +133,11 @@ pipeline {
                 sh '''
                     set -eu
 
-                    test -f k8s/deployment.yaml
-                    test -f k8s/service.yaml
+                    test -f deployment.yaml
+                    test -f service.yaml
 
-                    kubectl apply -f k8s/deployment.yaml
-                    kubectl apply -f k8s/service.yaml
+                    kubectl apply -f deployment.yaml
+                    kubectl apply -f service.yaml
 
                     kubectl rollout status \
                         deployment/"$K8S_DEPLOYMENT" \
