@@ -10,8 +10,8 @@ pipeline {
     environment {
         IMAGE_NAME = 'campus-equipment-booking:set-f'
         CONTAINER_NAME = 'campus-equipment-booking-test'
-        K8S_DEPLOYMENT = 'campus-equipment-booking'
-        K8S_SERVICE = 'campus-equipment-booking'
+        K8S_DEPLOYMENT = 'campus-booking'
+        K8S_SERVICE = 'campus-booking-service'
         APP_PORT = '8080'
     }
 
@@ -148,7 +148,7 @@ pipeline {
 
                     kubectl wait \
                         --for=condition=Ready \
-                        pod -l app=campus-equipment-booking \
+                        pod -l app=campus-booking \
                         --timeout=180s
                 '''
             }
@@ -198,7 +198,7 @@ pipeline {
 
                     kubectl wait \
                         --for=condition=Ready \
-                        pod -l app=campus-equipment-booking \
+                        pod -l app=campus-booking \
                         --timeout=180s
 
                     kubectl get deployment,pods,services -o wide \
@@ -239,7 +239,7 @@ pipeline {
 
         cleanup {
             sh '''
-                pkill -f 'kubectl port-forward service/campus-equipment-booking 18080:8080' \
+                pkill -f 'kubectl port-forward service/campus-booking-service 18080:8080' \
                     2>/dev/null || true
             '''
         }
